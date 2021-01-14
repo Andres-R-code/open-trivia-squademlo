@@ -1,11 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Open trivia api - Aquademlo Team</title>
+  <title>Laboratorio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" integrity="sha512-8bHTC73gkZ7rZ7vpqUQThUDhqcNFyYi2xgDgPDHc+GXVGHXq+xPjynxIopALmOPqzo9JZj0k6OqqewdGO3EsrQ==" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js" integrity="sha512-dqw6X88iGgZlTsONxZK9ePmJEFrmHwpuMrsUChjAw1mRUhUITE5QU9pkcSox+ynfLhL15Sv2al5A0LVyDCmtUw==" crossorigin="anonymous"></script>
 </head>
 <body>
-  
+
+<div class="ui basic segment"></div>
+<div class="ui container">
+
+  <h1 class="ui blue header">
+    <i class="chart area blue icon"></i>
+    <div class="content">Open Trivia
+      <div class="sub header">Juego de preguntas y respuestas.</div>
+    </div>
+  </h1>
+
+<!-- 
+  <div class="ui indicating progress" id="progressbar">
+    <div class="bar">
+      <div class="progress"></div>
+    </div>
+    <div class="label">Preguntas contestadas</div>
+  </div> -->
+
+  <!-- <div class="ui button" onclick="$('.shape').shape('flip right')">Transicion</div>
+
+<div class="ui shape">
+  <div class="sides">
+    <div class="ui segment fluid black"></div>
+  </div>
+</div> -->
+
+
+<div class="ui centered grid">
+  <div class="four wide column">
+    <form class="ui form tall stacked raised padded segment" id="formulario" onsubmit="event.preventDefault()">
+        <div class="field">
+          <label>Cantidad de preguntas</label>
+          <select class="ui fluid selection dropdown" id="cantidad">
+            <i class="dropdown icon"></i>
+            <option value="1">1</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Categoria</label>
+          <select class="ui fluid selection dropdown" id="categorias"></select>
+        </div>
+
+
+        <div class="field">
+          <label>Dificultad</label>
+          <select class="ui fluid selection dropdown" id="dificultad">
+            <i class="dropdown icon"></i>
+            <option value=""">Seleccionar Dificultad</option>
+                            <option value=" easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Tipo</label>
+          <select class="ui fluid selection dropdown" id="tipo">
+            <i class="dropdown icon"></i>
+            <option value="">Seleccionar Tipo</option>
+            <option value="multiple">Multiple</option>
+            <option value="boolean">Boolean</option>
+          </select>
+        </div>
+
+        <div class="field">
+
+          <div class="ui animated fade instagram fluid button" tabindex="0" onclick="getQuest()">
+            <div class="visible content">Solicitar preguntas</div>
+            <div class="hidden content">
+              Buena suerte!
+            </div>
+          </div>
+
+        </div>
+
+      </form>
+
+    </div>
+    <div class="twelve wide column" id="renderquestions">
+
+    </div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+<script>
+  // function getAnswers() {
+  //   const render = document.getElementById('render');
+  //   const resp = document.getElementsByName('respuestas');
+  //   resp.forEach((row) => {
+  //     if (row.checked) {
+  //       render.innerHTML = `Seleccionaste: ${row.value}`; // Renderiza la repsuesta
+  //       $('.checkbox').checkbox('set disabled') // Desahabilita los checkbox
+  //       $('.button').addClass('disabled'); // Deshabilita el submit principal
+  //     }
+  //   });
+  // }
+</script>
 </body>
+
 </html>
