@@ -21,17 +21,24 @@ function getQuest() {
 //   $('#progressbar').progress('increment');
 //   $('#checkbox' + data).checkbox('set disabled'); // Desahabilita los checkbox
 // }
+let a = new crono("timer", 120, 0);
+a.conteoSegundos();
+
 
 function renderQuest(data) {
+
 
     let html = '';
     let ids = [];
 
     data.forEach((row, index) => {
+
         ids.push(index);
         html += `
       <div class="ui stacked segments">
-      <div class="ui inverted grey segment"></div>
+      <div class="ui inverted grey segment">
+      <div id="timer"></div>
+      </div>
       <div class="ui segment padded">${row.category}</div>
       <div class="ui inverted blue segment very padded center aligned">
       <h3><i class="ui quote left icon"></i> ${row.question} <i class="ui quote right icon"></i></h3>
@@ -142,5 +149,3 @@ function crono(id, inicio, final) {
 }
 
 // parametersTimer permite ajustar los parametros de entrada del temporizador
-let parametersTimer = new crono("timer", 120, 0);
-parametersTimer.conteoSegundos();
