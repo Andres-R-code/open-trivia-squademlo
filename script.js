@@ -21,20 +21,19 @@ function getQuest() {
 //   $('#progressbar').progress('increment');
 //   $('#checkbox' + data).checkbox('set disabled'); // Desahabilita los checkbox
 // }
-let a = new crono("timer", 120, 0);
-a.conteoSegundos();
+
 
 
 function renderQuest(data) {
 
 
-    let html = '';
-    let ids = [];
+  let html = '';
+  let ids = [];
 
-    data.forEach((row, index) => {
+  data.forEach((row, index) => {
 
-        ids.push(index);
-        html += `
+    ids.push(index);
+    html += `
       <div class="ui stacked segments">
       <div class="ui inverted grey segment">
       <div id="timer"></div>
@@ -44,17 +43,21 @@ function renderQuest(data) {
       <h3><i class="ui quote left icon"></i> ${row.question} <i class="ui quote right icon"></i></h3>
       </div>
       <div class="ui horizontal segments">`;
-        randomArray(row.incorrect_answers, row.correct_answer).forEach(r => {
-            html += `<div class="ui center aligned very padded button segment" name="answers${index}" value="${[r, index, row.correct_answer]}" onclick="progressBar(${index})">
+    randomArray(row.incorrect_answers, row.correct_answer).forEach(r => {
+      html += `<div class="ui center aligned very padded button segment" name="answers${index}" value="${[r, index, row.correct_answer]}" onclick="progressBar(${index})">
         <p>${r}</p>
         </div>`
-        });
+    });
 
-        html += `</div>
+    html += `</div>
       <div class="ui inverted grey segment">
       </div></div>`;
-    });
-    document.getElementById('renderquestions').innerHTML = html;
+  });
+  document.getElementById('renderquestions').innerHTML = html;
+  
+  const numbertimer = ids.length * 10;
+  let a = new crono("timer", numbertimer, 0);
+  a.conteoSegundos();
 }
 
 function respuesta(ids) {
