@@ -1,4 +1,4 @@
-function randomArray(incorrectas, correcta) {
+randomArray(incorrectas, correcta) {
     let answers = [];
     incorrectas.forEach(r => { answers.push(r); });
     answers.push(correcta);
@@ -26,9 +26,9 @@ function getQuest() {
 
 function renderQuest(data) {
 
-  let html = '';
-  let ids = [];
-  html += `
+    let html = '';
+    let ids = [];
+    html += `
   <div class="ui stacked segments">
   <div class="ui inverted grey segment">
   <div id="timer"></div>
@@ -37,38 +37,38 @@ function renderQuest(data) {
   <div class="sides">
   `;
 
-  data.forEach((row, index) => {
+    data.forEach((row, index) => {
 
-    ids.push(index);
+        ids.push(index);
 
-    html += `
+        html += `
     <div class="side" id="hide${index}">
       <div class="ui segment padded">${row.category}</div>
       <div class="ui inverted blue segment very padded center aligned">
       <h3><i class="ui quote left icon"></i> ${row.question} <i class="ui quote right icon"></i></h3>
       </div>
       <div class="ui horizontal segments">`;
-    randomArray(row.incorrect_answers, row.correct_answer).forEach(r => {
-      html += `<div class="ui center aligned very padded button segment" name="answers${index}" value="${[r, index, row.correct_answer]}" onclick="respuesta(${ids})">
+        randomArray(row.incorrect_answers, row.correct_answer).forEach(r => {
+            html += `<div class="ui center aligned very padded button segment" name="answers${index}" value="${[r, index, row.correct_answer]}" onclick="respuesta(${ids})">
         <p>${r}</p>
         </div>`
+        });
+
+        html += `</div></div>`;
     });
 
-    html += `</div></div>`;
-  });
-
-  html += `
+    html += `
   </div></div>
   <div class="ui inverted grey segment"></div>
   </div>`;
-  document.getElementById('renderquestions').innerHTML = html;
+    document.getElementById('renderquestions').innerHTML = html;
 
-  $('#hide0').addClass('active');
+    $('#hide0').addClass('active');
 
-  $('#solicitapreguntas').addClass('disabled');
+    $('#solicitapreguntas').addClass('disabled');
 
-  let a = new crono('timer', ids.length * 10, 0);
-  a.conteoSegundos();
+    let a = new crono('timer', ids.length * 10, 0);
+    a.conteoSegundos();
 
 }
 
@@ -87,13 +87,13 @@ function respuesta(ids) {
 
 
                 $('.shape').shape('flip right');
-              qz
+                qz
 
                 if (valores[0] === valores[2]) {
                     $('#dimmergood' + data).dimmer('show');
                 } else {
                     $('#dimmerbad' + data).dimmer('show');
-                }   
+                }
             }
         });
     });
@@ -139,6 +139,7 @@ function colorDifficulty(difficulty) {
     }
 }
 
+
 // Funcion para capitalizar
 function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -146,7 +147,7 @@ function capitalize(string) {
 
 function deleteSpaces(string) {
     string.split(" ").join("");
-} 
+}
 
 function crono(id, inicio, final) {
     //variables auxiliares
