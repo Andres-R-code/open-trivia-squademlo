@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Consumo de api - js</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
+        integrity="sha512-8bHTC73gkZ7rZ7vpqUQThUDhqcNFyYi2xgDgPDHc+GXVGHXq+xPjynxIopALmOPqzo9JZj0k6OqqewdGO3EsrQ=="
+        crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"
+        integrity="sha512-dqw6X88iGgZlTsONxZK9ePmJEFrmHwpuMrsUChjAw1mRUhUITE5QU9pkcSox+ynfLhL15Sv2al5A0LVyDCmtUw=="
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <div class="ui container">
+
+        <div class="ui basic fluid compact segment"></div>
+        <h1 class="ui blue header">
+            <i class="chart area blue icon"></i>
+            <div class="content">Open Trivia
+                <div class="sub header">Juego de preguntas y respuestas.</div>
+            </div>
+
+        </h1>
+
+
+
+        <div class="ui centered grid">
+            <div class="five wide column">
+
+                <form class="ui form tall stacked raised padded segment" id="formulario"
+                    onsubmit="event.preventDefault()">
+
+                    <div class="field">
+                        <label>Cantidad de preguntas</label>
+                        <select class="ui fluid selection dropdown" id="cantidad">
+                            <i class="dropdown icon"></i>
+                            <option value="2">2</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Categoria</label>
+                        <select class="ui fluid selection dropdown" id="categorias"></select>
+                    </div>
+
+
+                    <div class="field">
+                        <label>Dificultad</label>
+                        <select class="ui fluid selection dropdown" id="dificultad">
+                            <i class="dropdown icon"></i>
+                            <option value=""">Seleccionar Dificultad</option>
+                            <option value=" easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Tipo</label>
+                        <select class="ui fluid selection dropdown" id="tipo">
+                            <i class="dropdown icon"></i>
+                            <option value="">Seleccionar Tipo</option>
+                            <option value="multiple">Multiple</option>
+                            <option value="boolean">Boolean</option>
+                        </select>
+                    </div>
+
+
+                    <div class="field">
+
+
+                        <div class="ui animated fade instagram fluid button" tabindex="0" onclick="getQuest()">
+                            <div class="visible content">Solicitar preguntas</div>
+                            <div class="hidden content">
+                                Buena suerte!
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                </form>
+                <!-- Estadisticas -->
+                <div class="ui indicating progress" id="progressbar">
+                    <div class="bar">
+                      <div class="progress"></div>
+                    </div>
+                    <div class="label">Preguntas contestadas</div>
+
+                  </div>
+                <!-- Estadisticas -->
+            </div>
+
+            <div class="eleven wide column">
+                <div class="ui centered container">
+                    <form id="form" onsubmit="event.preventDefault()">
+
+                        <div class="ui tall stacked raised padded segment">
+
+                            <h2 class="ui blue header">
+                                Introduccion
+                                <div class="sub header">Contexto sobre el desarrollo del proyecto.</div>
+                            </h2>
+                            <p>Bienvenidos a este proyecto que consiste en un juego de preguntas y respuestas las cuales
+                                provienen de un servidor externo mediante el consumo de un api.</p>
+                            <p>El sitio proveniente de la informacion es el siguiente <a
+                                    href="http://opentdb.com/">Opentdb.</a></p>
+                            <p>Esta escrito en javascript para el procesamiento de informacion y validacion de las
+                                respuestas.</p>
+                            <p>Algunos recursos para la estructura de la maquetacion, estilos y animaciones son las
+                                siguientes representadas con su respectivo icono.</p>
+
+                            <div class="ui equal width center aligned grid">
+                                <div class="column"><i class="massive js square yellow icon"></i></div>
+                                <div class="column"><i class="massive html5 orange icon"></i></div>
+                                <div class="column"><i class="massive css3 blue icon"></i></div>
+                                <div class="column"><i class="massive git square red icon"></i></div>
+                                <div class="column"><i class="massive github square icon"></i></div>
+                            </div>
+
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
