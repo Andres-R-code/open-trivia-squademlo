@@ -26,39 +26,53 @@ function getQuest() {
 
 function renderQuest(data) {
 
-
   let html = '';
   let ids = [];
+  html += `
+  <div class="ui stacked segments">
+  <div class="ui inverted grey segment">
+  <div id="timer"></div>
+  </div>
+  <div class="ui shape">
+  <div class="sides">
+  `;
 
   data.forEach((row, index) => {
 
     ids.push(index);
+
     html += `
-      <div class="ui stacked segments">
-      <div class="ui inverted grey segment">
-      <div id="timer"></div>
-      </div>
+    <div class="side" id="hide${index}">
       <div class="ui segment padded">${row.category}</div>
       <div class="ui inverted blue segment very padded center aligned">
       <h3><i class="ui quote left icon"></i> ${row.question} <i class="ui quote right icon"></i></h3>
       </div>
       <div class="ui horizontal segments">`;
     randomArray(row.incorrect_answers, row.correct_answer).forEach(r => {
-      html += `<div class="ui center aligned very padded button segment" name="answers${index}" value="${[r, index, row.correct_answer]}" onclick="progressBar(${index})">
+      html += `<div class="ui center aligned very padded button segment" name="answers${index}" value="${[r, index, row.correct_answer]}" onclick="respuesta(${ids})">
         <p>${r}</p>
         </div>`
     });
 
-    html += `</div>
-      <div class="ui inverted grey segment">
-      </div></div>`;
+    html += `</div></div>`;
   });
+
+  html += `
+  </div></div>
+  <div class="ui inverted grey segment"></div>
+  </div>`;
   document.getElementById('renderquestions').innerHTML = html;
-  
-  const numbertimer = ids.length * 10;
-  let a = new crono("timer", numbertimer, 0);
+
+  $('#hide0').addClass('active');
+
+  $('#solicitapreguntas').addClass('disabled');
+
+  let a = new crono('timer', ids.length * 10, 0);
   a.conteoSegundos();
+
 }
+
+
 
 function respuesta(ids) {
     const elementos = numberToArray(ids);
@@ -70,11 +84,16 @@ function respuesta(ids) {
                 $('#resultadorespuestas').addClass('disabled'); // Deshabilita el submit principa
                 $('#resultadorespuestas').val("Puedes generar nuevas preguntas desde el formulario de la izquierda, buena suerte!");
                 const valores = row.value.split(',');
+
+
+                $('.shape').shape('flip right');
+              qz
+
                 if (valores[0] === valores[2]) {
                     $('#dimmergood' + data).dimmer('show');
                 } else {
                     $('#dimmerbad' + data).dimmer('show');
-                }
+                }   
             }
         });
     });
