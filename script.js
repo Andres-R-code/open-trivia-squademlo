@@ -157,7 +157,6 @@ $('#progressbar').show();
 
 
 function getAnswers(ids) {
-
   const elementos = numberToArray(ids);
   elementos.forEach(data => {
     const resp = document.getElementsByName('answers' + data); // Recoge la informacion de los input con el name="answers"
