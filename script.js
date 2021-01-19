@@ -9,8 +9,8 @@ function crono(id, inicio, final) {
   this.conteoSegundos = function () {
     // Comprobacion de finalizacion de conteo
     if (this.contador == this.final) {
-      this.conteoSegundos = null;
-      return;
+      $('.checkbox').checkbox('set disabled');
+      $('.ui.modal').modal('show');
     }
 
     document.getElementById(this.id).innerHTML = this.contador--;
@@ -46,31 +46,15 @@ function getQuest() {
 
 }
 
-function progressBar(data) {
-  $('#progressbar').progress('increment');
-  $('#checkbox' + data).checkbox('set disabled'); // Desahabilita los checkbox
-}
-
-
-
 function renderQuest(data) {
 
-  let html = '';
-  let ids = [];
+  let ids = 0;
+  let html = `<div class="ui two column grid">`;
 
-
-
-
-  html += `
-  <div class="ui container people shape">
-
-  <div class="sides">`;
-
-
-
-  data.forEach((row, index) => {
-
-    ids.push(index);
+  data.forEach((row) => {
+    
+    ids += 1;
+    row.id = ids;
 
     let answers = [];
 
@@ -84,7 +68,9 @@ function renderQuest(data) {
     });
 
     html += `
-    <div class="side" id="shape${index}">
+    
+    <div class="column">
+    <div class="ui segment">
     
       <h4 class="ui dividing header">
       <div class="ui icon" data-tooltip="Este color tiene relacion con la dificultad!">
@@ -107,12 +93,12 @@ function renderQuest(data) {
 
       <div class="ui divider"></div>
 
-      <div class="inline fields" id="checkbox${index}">`;
+      <div class="inline fields" id="checkbox${row.id}">`;
 
     answers.forEach(respuesta => {
       html += `<div class="field">
             <div class="ui toggle checkbox">
-            <input type="radio" name="answers${index}" value="${[respuesta,index,row.correct_answer]}" onclick="getAnswers(${ids.length}),progressBar(${index});">
+            <input type="radio" name="answers${row.id}" value="${[respuesta,row.id,row.correct_answer]}" onclick="getAnswers(${ids})">
             <label>${respuesta}</label>
             </div>
             </div>`;
@@ -121,28 +107,49 @@ function renderQuest(data) {
     html += `
     </div>
     </div>
+    <div class="ui dimmer" id="dimmergood${row.id}">
+    <div class="content">  
+    <h2 class="ui inverted icon header">
+    <i class="star yellow icon"></i>
+    <div class="content">Respuesta correcta!
+    <div class="sub header">${row.correct_answer}</div>
+    </div>
+    </h2>
+    </div>
+    </div>
+    
+    
+    <div class="ui dimmer" id="dimmerbad${row.id}">
+    <div class="content">  
+    <h2 class="ui inverted icon header">
+    <i class="x red icon"></i>
+    <div class="content">Respuesta incorrecta!
+    <div class="sub header">${row.correct_answer}</div>
+    </div>
+    </h2>
+    </div>
+    </div>
 
-    </div>`;
+    </div>
+    </div>
+    `;
   });
   html += `
-  
-  <div class="ui basic segment"></div>
-  
-  
+
   </div>
-</div>`;
+  <div class="ui basic segment"></div>`;
 
 
 
 
 document.getElementById('form').innerHTML = html;
-$('#shape1').addClass('active');
+
 $('#formulario').hide();
 $('#progressbar').show();
 
-let a = new crono('timer', ids.length * 15, 0);
+ let a = new crono('timer', ids * 1, 0);
   
-  a.conteoSegundos();
+   a.conteoSegundos();
 
 }
 
@@ -150,27 +157,19 @@ let a = new crono('timer', ids.length * 15, 0);
 
 
 function getAnswers(ids) {
-  
-  let correctas = [];
-  let incorrectas = [];
- 
 
   const elementos = numberToArray(ids);
   elementos.forEach(data => {
     const resp = document.getElementsByName('answers' + data); // Recoge la informacion de los input con el name="answers"
     resp.forEach((row) => {
       if (row.checked) {
-       // $('.checkbox').checkbox('set disabled'); // Desahabilita los checkbox
-       // $('#resultadorespuestas').addClass('disabled'); // Deshabilita el submit principa
-        // $('#resultadorespuestas').val("Puedes generar nuevas preguntas desde el formulario de la izquierda, buena suerte!");
-
+        $('#progressbar').progress('increment');
+        $('#checkbox' + data).checkbox('set disabled');
         const valores = row.value.split(',');
         if (valores[0] === valores[2]) {
-          correctas.push(valores[0]);
-          $('.shape').shape('flip back');
+          $('#dimmergood' + data).dimmer('show');
         } else {
-          incorrectas.push(valores[0]);
-          $('.shape').shape('flip back');
+          $('#dimmerbad' + data).dimmer('show');
         }
       }
     });
