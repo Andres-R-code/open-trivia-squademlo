@@ -58,9 +58,6 @@ function renderQuest(data) {
   let html = '';
   let ids = [];
 
-
-
-
   html += `
   <div class="ui container people shape">
 
@@ -125,12 +122,9 @@ function renderQuest(data) {
     </div>`;
   });
   html += `
-  
   <div class="ui basic segment"></div>
-  
-  
   </div>
-</div>`;
+  </div>`;
 
 
 
@@ -150,11 +144,6 @@ let a = new crono('timer', ids.length * 15, 0);
 
 
 function getAnswers(ids) {
-  
-  let correctas = [];
-  let incorrectas = [];
- 
-
   const elementos = numberToArray(ids);
   elementos.forEach(data => {
     const resp = document.getElementsByName('answers' + data); // Recoge la informacion de los input con el name="answers"
@@ -166,10 +155,8 @@ function getAnswers(ids) {
 
         const valores = row.value.split(',');
         if (valores[0] === valores[2]) {
-          correctas.push(valores[0]);
           $('.shape').shape('flip back');
         } else {
-          incorrectas.push(valores[0]);
           $('.shape').shape('flip back');
         }
       }
