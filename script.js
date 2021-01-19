@@ -1,3 +1,28 @@
+function crono(id, inicio, final) {
+  //variables auxiliares
+  this.id = id;
+  this.inicio = inicio;
+  this.final = final;
+  this.contador = this.inicio;
+
+  // funcion conteoSegundos se encarga de realizar el conteo
+  this.conteoSegundos = function () {
+    // Comprobacion de finalizacion de conteo
+    if (this.contador == this.final) {
+      this.conteoSegundos = null;
+      return;
+    }
+
+    document.getElementById(this.id).innerHTML = this.contador--;
+    // se invoca la función conteoSegundos con el metodo setTimeout
+    setTimeout(this.conteoSegundos.bind(this), 1000);
+  };
+}
+
+
+
+
+
 function getQuest() {
 
   const cantidad = document.getElementById('cantidad').value;
@@ -11,12 +36,14 @@ function getQuest() {
     total: cantidad
   });
 
-  
-  
-
   fetch(url)
     .then((response) => response.json())
     .then((data) => renderQuest(data.results));
+
+
+
+
+
 }
 
 function progressBar(data) {
@@ -24,37 +51,54 @@ function progressBar(data) {
   $('#checkbox' + data).checkbox('set disabled'); // Desahabilita los checkbox
 }
 
+
+
 function renderQuest(data) {
 
   let html = '';
-  let id = 0;
+  let ids = [];
+
+
+
+
+  html += `
+  <div class="ui container people shape">
+
+  <div class="sides">`;
+
+
 
   data.forEach((row, index) => {
 
-    id += 1;
-    row.id = id;
+    ids.push(index);
 
     let answers = [];
+
     row.incorrect_answers.forEach(r => {
       answers.push(r);
     });
     answers.push(row.correct_answer);
+
     answers.sort(function () {
       return 0.5 - Math.random();
     });
 
     html += `
-    <div class="ui tall stacked raised segment" id="segmentrespuestas${id}">
+    <div class="side" id="shape${index}">
+    
       <h4 class="ui dividing header">
       <div class="ui icon" data-tooltip="Este color tiene relacion con la dificultad!">
         <i class="tasks ${colorDifficulty(row.difficulty)} icon"></i>
         </div>
+        
         <div class="content">
           ${row.category}
           <div class="sub header">${capitalize(row.difficulty)} | ${capitalize(row.type)} | ${row.correct_answer}</div>
+
+          
         </div>
       </h4>
-      
+
       <div class="ui inverted ${colorDifficulty(row.difficulty)} tertiary segment very padded center aligned">
       <h4><i class="ui quote left icon"></i> ${row.question} <i class="ui quote right icon"></i></h4>
       </div>
@@ -63,12 +107,12 @@ function renderQuest(data) {
 
       <div class="ui divider"></div>
 
-      <div class="inline fields" id="checkbox${row.id}">`;
+      <div class="inline fields" id="checkbox${index}">`;
 
     answers.forEach(respuesta => {
       html += `<div class="field">
             <div class="ui toggle checkbox">
-            <input type="radio" name="answers${row.id}" value="${[respuesta,id,row.correct_answer]}" onclick="progressBar(${row.id})">
+            <input type="radio" name="answers${index}" value="${[respuesta,index,row.correct_answer]}" onclick="getAnswers(${ids.length}),progressBar(${index});">
             <label>${respuesta}</label>
             </div>
             </div>`;
@@ -78,59 +122,62 @@ function renderQuest(data) {
     </div>
     </div>
 
-    
-
-    <div class="ui dimmer" id="dimmergood${row.id}">
-    <div class="content">  
-    <h2 class="ui inverted icon header">
-    <i class="star yellow icon"></i>
-    <div class="content">Respuesta correcta!
-    <div class="sub header">${row.correct_answer}</div>
-    </div>
-    </h2>
-    </div>
-    </div>
-    
-    
-    <div class="ui dimmer" id="dimmerbad${row.id}">
-    <div class="content">  
-    <h2 class="ui inverted icon header">
-    <i class="x red icon"></i>
-    <div class="content">Respuesta incorrecta!
-    <div class="sub header">${row.correct_answer}</div>
-    </div>
-    </h2>
-    </div>
-    </div>
-
     </div>`;
   });
   html += `
-  <input type="submit" class="ui fluid button orange" onclick="getAnswers(${id})" id="resultadorespuestas">
-  <div class="ui basic segment"></div>`;
+  
+  <div class="ui basic segment"></div>
+  
+  
+  </div>
+</div>`;
 
-  document.getElementById('form').innerHTML = html;
+
+
+
+document.getElementById('form').innerHTML = html;
+$('#shape1').addClass('active');
+$('#formulario').hide();
+$('#progressbar').show();
+
+let a = new crono('timer', ids.length * 15, 0);
+  
+  a.conteoSegundos();
+
 }
 
+
+
+
 function getAnswers(ids) {
+  
+  let correctas = [];
+  let incorrectas = [];
+ 
+
   const elementos = numberToArray(ids);
   elementos.forEach(data => {
     const resp = document.getElementsByName('answers' + data); // Recoge la informacion de los input con el name="answers"
     resp.forEach((row) => {
       if (row.checked) {
-        $('.checkbox').checkbox('set disabled'); // Desahabilita los checkbox
-        $('#resultadorespuestas').addClass('disabled'); // Deshabilita el submit principa
-        $('#resultadorespuestas').val("Puedes generar nuevas preguntas desde el formulario de la izquierda, buena suerte!");
+       // $('.checkbox').checkbox('set disabled'); // Desahabilita los checkbox
+       // $('#resultadorespuestas').addClass('disabled'); // Deshabilita el submit principa
+        // $('#resultadorespuestas').val("Puedes generar nuevas preguntas desde el formulario de la izquierda, buena suerte!");
+
         const valores = row.value.split(',');
         if (valores[0] === valores[2]) {
-          $('#dimmergood' + data).dimmer('show');
+          correctas.push(valores[0]);
+          $('.shape').shape('flip back');
         } else {
-          $('#dimmerbad' + data).dimmer('show');
+          incorrectas.push(valores[0]);
+          $('.shape').shape('flip back');
         }
       }
     });
   });
 }
+
+
 
 function numberToArray(cantidad) {
   let a = [];
@@ -151,7 +198,7 @@ getCat();
 
 function renderCat(data) {
   const catData = document.getElementById('categorias');
-  let html = `<option value="&category=">Seleccionar Categoria</option>`;
+  let html = `<i class="dropdown icon"></i><option value="&category=">Seleccionar Categoria</option>`;
   for (const cat of data.trivia_categories) {
     html += `<option value="&category=${cat.id}">${cat.name}</option>`;
   }
