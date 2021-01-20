@@ -1,173 +1,243 @@
-randomArray(incorrectas, correcta) {
-    let answers = [];
-    incorrectas.forEach(r => { answers.push(r); });
-    answers.push(correcta);
-    answers.sort(function () { return 0.5 - Math.random(); });
-    return answers;
+function crono(id, inicio, final) {
+  //variables auxiliares
+  this.id = id;
+  this.inicio = inicio;
+  this.final = final;
+  this.contador = this.inicio;
+
+  // funcion conteoSegundos se encarga de realizar el conteo
+  this.conteoSegundos = function () {
+    // Comprobacion de finalizacion de conteo
+    if (this.contador == this.final) {
+      $('.checkbox').checkbox('set disabled');
+      $('.ui.modal').modal('setting', 'closable', false).modal({
+        blurring: true
+      }).modal('show');
+      return;
+    }
+    document.getElementById(this.id).innerHTML = this.contador--;
+    // se invoca la función conteoSegundos con el metodo setTimeout
+    setTimeout(this.conteoSegundos.bind(this), 1000);
+  };
 }
+
+
+function estadisticas(cantidad) {
+  let htmlmodal = '';
+  const a = numberToArray(cantidad);
+  a.forEach(r => {
+    htmlmodal += `<div class="eight wide column" id="estadistica${r}">
+    <div class="ui segment inverted grey">
+    Pregunta #${r} no ha sido contestada
+    </div>
+    </div>`;
+  });
+  
+  return $('#estadisticas').html(htmlmodal);
+}
+
+
 
 function getQuest() {
-    const can = $('#cantidad').val();
-    const cat = $('#categorias').val();
-    const dif = $('#dificultad').val();
-    const tipo = $('#tipo').val();
 
-    let url = `https://opentdb.com/api.php?amount=${can}${cat}&difficulty=${dif}&type=${tipo}`;
-    fetch(url).then((response) => response.json()).then((data) => renderQuest(data.results));
-    // $('#progressbar').progress('reset').progress({ total: can });
+  const cantidad = document.getElementById('cantidad').value;
+  const categorias = document.getElementById('categorias').value;
+  const dificultad = document.getElementById('dificultad').value;
+  const tipo = document.getElementById('tipo').value;
+
+  let url = `https://opentdb.com/api.php?amount=${cantidad}${categorias}&difficulty=${dificultad}&type=${tipo}`;
+
+  $('#progressbar').progress('reset').progress({
+    total: cantidad
+  });
+
+  fetch(url)
+    .then((response) => response.json())
+    .then((data) => renderQuest(data.results));
 }
-
-// function progressBar(data) {
-//   $('#progressbar').progress('increment');
-//   $('#checkbox' + data).checkbox('set disabled'); // Desahabilita los checkbox
-// }
-
-
 
 function renderQuest(data) {
 
-    let html = '';
-    let ids = [];
+  let ids = 0;
+  let html = `<div class="ui two column grid">`;
+
+  data.forEach((row) => {
+
+    ids += 1;
+    row.id = ids;
+
+    let answers = [];
+
+    row.incorrect_answers.forEach(r => {
+      answers.push(r);
+    });
+    answers.push(row.correct_answer);
+
+    answers.sort(function () {
+      return 0.5 - Math.random();
+    });
+
     html += `
-  <div class="ui stacked segments">
-  <div class="ui inverted grey segment">
-  <div id="timer"></div>
-  </div>
-  <div class="ui shape">
-  <div class="sides">
-  `;
+    
+    <div class="column">
+    <div class="ui segment">
+    
+      <h4 class="ui dividing header">
+      <div class="ui icon" data-tooltip="Este color tiene relacion con la dificultad!">
+        <i class="tasks ${colorDifficulty(row.difficulty)} icon"></i>
+        </div>
+        
+        <div class="content">
+          ${row.category}
+          <div class="sub header">${capitalize(row.difficulty)} | ${capitalize(row.type)} | ${row.correct_answer}</div>
 
-    data.forEach((row, index) => {
+          
+        </div>
+      </h4>
 
-        ids.push(index);
-
-        html += `
-    <div class="side" id="hide${index}">
-      <div class="ui segment padded">${row.category}</div>
-      <div class="ui inverted blue segment very padded center aligned">
-      <h3><i class="ui quote left icon"></i> ${row.question} <i class="ui quote right icon"></i></h3>
+      <div class="ui inverted ${colorDifficulty(row.difficulty)} tertiary segment very padded center aligned">
+      <h4><i class="ui quote left icon"></i> ${row.question} <i class="ui quote right icon"></i></h4>
       </div>
-      <div class="ui horizontal segments">`;
-        randomArray(row.incorrect_answers, row.correct_answer).forEach(r => {
-            html += `<div class="ui center aligned very padded button segment" name="answers${index}" value="${[r, index, row.correct_answer]}" onclick="respuesta(${ids})">
-        <p>${r}</p>
-        </div>`
-        });
+  
+      <div class="ui equal width form">
 
-        html += `</div></div>`;
+      <div class="ui divider"></div>
+
+      <div class="inline fields" id="checkbox${row.id}">`;
+
+    answers.forEach(respuesta => {
+      html += `<div class="field">
+            <div class="ui toggle checkbox">
+            <input type="radio" name="answers${row.id}" value="${[respuesta,row.id,row.correct_answer,row.question]}" onclick="getAnswers(${ids}),$('#progressbar').progress('increment')">
+            <label>${respuesta}</label>
+            </div>
+            </div>`;
     });
 
     html += `
-  </div></div>
-  <div class="ui inverted grey segment"></div>
-  </div>`;
-    document.getElementById('renderquestions').innerHTML = html;
+    </div>
+    </div>
+    <div class="ui dimmer" id="dimmergood${row.id}">
+    <div class="content">  
+    <h2 class="ui inverted icon header">
+    <i class="star yellow icon"></i>
+    <div class="content">Respuesta correcta!
+    <div class="sub header">${row.correct_answer}</div>
+    </div>
+    </h2>
+    </div>
+    </div>
+    
+    
+    <div class="ui dimmer" id="dimmerbad${row.id}">
+    <div class="content">  
+    <h2 class="ui inverted icon header">
+    <i class="x red icon"></i>
+    <div class="content">Respuesta incorrecta!
+    <div class="sub header">${row.correct_answer}</div>
+    </div>
+    </h2>
+    </div>
+    </div>
 
-    $('#hide0').addClass('active');
+    </div>
+    </div>
+    `;
+  });
+  html += `
 
-    $('#solicitapreguntas').addClass('disabled');
+  </div>
+  <div class="ui basic segment"></div>`;
 
-    let a = new crono('timer', ids.length * 10, 0);
-    a.conteoSegundos();
+
+
+
+  document.getElementById('form').innerHTML = html;
+
+  estadisticas(ids);
+  $('#formulario').hide();
+  $('#progressbar').show();
+
+  let a = new crono('timer', ids * 5, 0);
+
+  a.conteoSegundos();
 
 }
 
 
 
-function respuesta(ids) {
-    const elementos = numberToArray(ids);
-    elementos.forEach(data => {
-        const resp = document.getElementsByName('answers' + data); // Recoge la informacion de los input con el name="answers"
-        resp.forEach((row) => {
-            if (row.checked) {
-                $('.checkbox').checkbox('set disabled'); // Desahabilita los checkbox
-                $('#resultadorespuestas').addClass('disabled'); // Deshabilita el submit principa
-                $('#resultadorespuestas').val("Puedes generar nuevas preguntas desde el formulario de la izquierda, buena suerte!");
-                const valores = row.value.split(',');
 
-
-                $('.shape').shape('flip right');
-                qz
-
-                if (valores[0] === valores[2]) {
-                    $('#dimmergood' + data).dimmer('show');
-                } else {
-                    $('#dimmerbad' + data).dimmer('show');
-                }
-            }
-        });
+function getAnswers(ids) {
+  const elementos = numberToArray(ids);
+  elementos.forEach(data => {
+    const resp = document.getElementsByName('answers' + data); // Recoge la informacion de los input con el name="answers"
+    resp.forEach((row) => {
+      if (row.checked) {
+        $('#checkbox' + data).checkbox('set disabled');
+        const valores = row.value.split(',');
+        if (valores[0] === valores[2]) {
+          $('#dimmergood' + data).dimmer('show');
+          $('#estadistica' + data).html('<div class="ui segment inverted green">' + data + '.- La pregunta: ' + valores[3] + ' Fue correcta</div>');
+        } else {
+          $('#dimmerbad' + data).dimmer('show');
+          $('#estadistica' + data).html('<div class="ui segment inverted red">' + data + '.- La pregunta: ' + valores[3] + ' Fue incorrecta</div>');
+        }
+      }
     });
+  });
 }
+
+
 
 function numberToArray(cantidad) {
-    let a = [];
-    for (let i = 1; i < cantidad + 1; i++) {
-        a.push(i);
-    }
-    return a;
+  let a = [];
+  for (let i = 1; i < cantidad + 1; i++) {
+    a.push(i);
+  }
+  return a;
 }
 
 function getCat() {
-    fetch('https://opentdb.com/api_category.php').then((response) => response.json()).then((data) => renderCat(data));
+  const url = 'https://opentdb.com/api_category.php';
+  fetch(url)
+    .then((response) => response.json())
+    .then((data) => renderCat(data));
 }
 
 getCat();
 
 function renderCat(data) {
-    const catData = document.getElementById('categorias');
-    let html = `<option value="&category=">Seleccionar Categoria</option>`;
-    for (const cat of data.trivia_categories) {
-        html += `<option value="&category=${cat.id}">${cat.name}</option>`;
-    }
-    catData.innerHTML = html;
+  const catData = document.getElementById('categorias');
+  let html = `<i class="dropdown icon"></i><option value="&category=">Seleccionar Categoria</option>`;
+  for (const cat of data.trivia_categories) {
+    html += `<option value="&category=${cat.id}">${cat.name}</option>`;
+  }
+  catData.innerHTML = html;
 }
 
 $('.ui.dropdown').dropdown(); // inicializa el select en semantic ui
 
 // Funcion con switch para determinar el color de algunos elementos segun la dificultad
 function colorDifficulty(difficulty) {
-    switch (difficulty) {
-        case 'hard':
-            return 'red';
-            break;
-        case 'medium':
-            return 'blue';
-            break;
-        case 'easy':
-            return 'green';
-            break;
-    }
+  switch (difficulty) {
+    case 'hard':
+      return 'red';
+      break;
+    case 'medium':
+      return 'blue';
+      break;
+    case 'easy':
+      return 'green';
+      break;
+  }
 }
 
 
 // Funcion para capitalizar
 function capitalize(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 function deleteSpaces(string) {
-    string.split(" ").join("");
+  string.split(" ").join("");
 }
-
-function crono(id, inicio, final) {
-    //variables auxiliares
-    this.id = id;
-    this.inicio = inicio;
-    this.final = final;
-    this.contador = this.inicio;
-
-    // funcion conteoSegundos se encarga de realizar el conteo
-    this.conteoSegundos = function () {
-        // Comprobacion de finalizacion de conteo
-        if (this.contador == this.final) {
-            this.conteoSegundos = null;
-            return;
-        }
-
-        document.getElementById(this.id).innerHTML = this.contador--;
-        // se invoca la función conteoSegundos con el metodo setTimeout
-        setTimeout(this.conteoSegundos.bind(this), 1000);
-    };
-}
-
-// parametersTimer permite ajustar los parametros de entrada del temporizador
