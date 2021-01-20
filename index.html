@@ -43,6 +43,17 @@
 
 
 
+        <!-- Estadisticas -->
+        <div class="ui indicating progress" id="progressbar">
+            <div class="bar">
+              <div class="progress"></div>
+            </div>
+            <div class="label">Preguntas contestadas</div>
+
+          </div>
+        <!-- Estadisticas -->
+
+
 
 
 
@@ -53,7 +64,7 @@
             <div class="equal width fields">
                 <div class="field">
                     <label>Cantidad de preguntas</label>
-                    <select class="ui fluid selection dropdown" id="cantidad">
+                    <select class="ui fluid selection dropdown" id="cantidad" name="cantidad">
                         <i class="dropdown icon"></i>
                         <option value="2">2</option>
                         <option value="10">10</option>
@@ -65,14 +76,14 @@
 
                 <div class="field">
                     <label>Categoria</label>
-                    <select class="ui fluid selection dropdown" id="categorias"></select>
+                    <select class="ui fluid selection dropdown" id="categorias" name="categorias"></select>
                 </div>
             </div>
 
             <div class="equal width fields">
                 <div class="field">
                     <label>Dificultad</label>
-                    <select class="ui fluid selection dropdown" id="dificultad">
+                    <select class="ui fluid selection dropdown" id="dificultad" name="dificultad">
                         <i class="dropdown icon"></i>
                         <option value=""">Seleccionar Dificultad</option>
                     <option value=" easy">Easy</option>
@@ -83,7 +94,7 @@
 
                 <div class="field">
                     <label>Tipo</label>
-                    <select class="ui fluid selection dropdown" id="tipo">
+                    <select class="ui fluid selection dropdown" id="tipo" name="tipo">
                         <i class="dropdown icon"></i>
                         <option value="">Seleccionar Tipo</option>
                         <option value="multiple">Multiple</option>
@@ -105,6 +116,8 @@
 
 
             </div>
+
+            <div class="ui error message"></div>
         </form>
 
         <form id="form" onsubmit="event.preventDefault()"></form>
@@ -116,7 +129,16 @@
 
 
     <div class="ui modal">
-        <div class="ui segment">Resultados de prueba</div>
+        <div class="ui raised segment">
+            <h2 class="ui center aligned icon header">
+                <i class="js square yellow icon"></i>
+                <div class="content">
+                  Resultados
+                  <div class="sub header">Resumen de tus respuestas.</div>
+                </div>
+              </h2>
+            <div class="ui grid" id="estadisticas"></div>
+        </div>
     </div>
 
     <script src="script.js"></script>

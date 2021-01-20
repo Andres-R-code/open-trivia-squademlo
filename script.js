@@ -10,9 +10,11 @@ function crono(id, inicio, final) {
     // Comprobacion de finalizacion de conteo
     if (this.contador == this.final) {
       $('.checkbox').checkbox('set disabled');
-      $('.ui.modal').modal('show');
+      $('.ui.modal').modal('setting', 'closable', false).modal({
+        blurring: true
+      }).modal('show');
+      return;
     }
-
     document.getElementById(this.id).innerHTML = this.contador--;
     // se invoca la función conteoSegundos con el metodo setTimeout
     setTimeout(this.conteoSegundos.bind(this), 1000);
@@ -20,6 +22,19 @@ function crono(id, inicio, final) {
 }
 
 
+function estadisticas(cantidad) {
+  let htmlmodal = '';
+  const a = numberToArray(cantidad);
+  a.forEach(r => {
+    htmlmodal += `<div class="eight wide column" id="estadistica${r}">
+    <div class="ui segment inverted grey">
+    Pregunta #${r} no ha sido contestada
+    </div>
+    </div>`;
+  });
+  
+  return $('#estadisticas').html(htmlmodal);
+}
 
 
 
@@ -39,11 +54,6 @@ function getQuest() {
   fetch(url)
     .then((response) => response.json())
     .then((data) => renderQuest(data.results));
-
-
-
-
-
 }
 
 function renderQuest(data) {
@@ -52,7 +62,7 @@ function renderQuest(data) {
   let html = `<div class="ui two column grid">`;
 
   data.forEach((row) => {
-    
+
     ids += 1;
     row.id = ids;
 
@@ -98,7 +108,7 @@ function renderQuest(data) {
     answers.forEach(respuesta => {
       html += `<div class="field">
             <div class="ui toggle checkbox">
-            <input type="radio" name="answers${row.id}" value="${[respuesta,row.id,row.correct_answer]}" onclick="getAnswers(${ids})">
+            <input type="radio" name="answers${row.id}" value="${[respuesta,row.id,row.correct_answer,row.question]}" onclick="getAnswers(${ids}),$('#progressbar').progress('increment')">
             <label>${respuesta}</label>
             </div>
             </div>`;
@@ -142,14 +152,15 @@ function renderQuest(data) {
 
 
 
-document.getElementById('form').innerHTML = html;
+  document.getElementById('form').innerHTML = html;
 
-$('#formulario').hide();
-$('#progressbar').show();
+  estadisticas(ids);
+  $('#formulario').hide();
+  $('#progressbar').show();
 
- let a = new crono('timer', ids * 1, 0);
-  
-   a.conteoSegundos();
+  let a = new crono('timer', ids * 5, 0);
+
+  a.conteoSegundos();
 
 }
 
@@ -162,13 +173,14 @@ function getAnswers(ids) {
     const resp = document.getElementsByName('answers' + data); // Recoge la informacion de los input con el name="answers"
     resp.forEach((row) => {
       if (row.checked) {
-        $('#progressbar').progress('increment');
         $('#checkbox' + data).checkbox('set disabled');
         const valores = row.value.split(',');
         if (valores[0] === valores[2]) {
           $('#dimmergood' + data).dimmer('show');
+          $('#estadistica' + data).html('<div class="ui segment inverted green">' + data + '.- La pregunta: ' + valores[3] + ' Fue correcta</div>');
         } else {
           $('#dimmerbad' + data).dimmer('show');
+          $('#estadistica' + data).html('<div class="ui segment inverted red">' + data + '.- La pregunta: ' + valores[3] + ' Fue incorrecta</div>');
         }
       }
     });
